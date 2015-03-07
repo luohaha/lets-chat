@@ -1,0 +1,6 @@
+{
+	"name" : "lets-chat",
+	"version" : "0.0.1",
+	"description" : "use socket.io to build a chatroom app",
+	"dependencies" : {}
+

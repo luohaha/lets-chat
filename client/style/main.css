@@ -1,0 +1,36 @@
+#ChatRoom {
+	position: absolute;
+	margin-top: 10px;
+	width: 1000px;
+	height: 400px;
+	background-color: #ff9900;
+	border: 2px solid;
+	border-radius: 25px;
+	-moz-border-radius: 25px;
+	box-shadow: 10px 10px 5px #888888;
+	overflow: scroll;
+}
+#input {
+	position: absolute;
+	margin-top: 450px;
+	width: 530px;
+	background-color: #779900;
+	border: 2px solid;
+	border-radius: 25px;
+}
+.send {
+	height: 120px;
+	width: 90px;
+	border: 2px solid;
+	border-radius: 25px;
+}
+#content {
+	height: 120px;
+	width: 270px;
+	border: 2px solid;
+	border-radius: 25px;
+}
+p {
+	font-family: Times, TimesNR, 'New Century Schoolbook', Georgia, 'New York', serif;
+	font-size: 30px;
+}

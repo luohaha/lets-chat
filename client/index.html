@@ -1,0 +1,55 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Chat Room v0.0.1</title>
+	<link rel="stylesheet" type="text/css" href="./style/main.css"/>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io.connect('ws://localhost:3000');
+		//var userid = prompt("please input your id:");
+		var name = prompt("please input your name:");
+		socket.emit('login', {userid : '1', username : name});
+		//接受新用户提醒消息
+		socket.on('welcome', function(data){
+			//alert(data.msg);
+			var tmp = "<p><font color=\"red\">";
+			var tmp2= "</font></p>";
+			$("div#ChatRoom").append(tmp+data.uname+"上线了!  "+"群内人数: "+data.unum+tmp2);
+		});
+		//用户离线提醒
+		socket.on('leave', function(data){
+			var tmp = "<p><font color=\"red\">";
+			var tmp2= "</font></p>";
+			$("div#ChatRoom").append(tmp+data.uname+"下线了!  "+"群内人数: "+data.unum+tmp2);
+		});
+		//接受新消息
+		socket.on('message', function(data){
+			//alert(data.msg);
+			var tmp = "<p>";
+			var tmp2= "</p>";
+			var time = new Date().toLocaleString();
+			$("div#ChatRoom").append(tmp+data.uname+"("+time+")"+" : "+data.say+tmp2);
+		});
+		//服务器断开
+		socket.on('disconnect', function(data){
+			$("div#ChatRoom").append("<p><font color=\"red\">与服务器断开连接!!!</font></p>");
+		});
+		socket.on('reconnect', function(data){
+			$("div#ChatRoom").append("<p><font color=\"red\">与服务器重新连接!!!</font></p>");
+		});
+	</script>
+	<script type="text/javascript" src="js/function.js"></script>
+</head>
+
+<body>
+  <div id="ChatRoom">
+  </div>
+  <div id="input">
+      <input type="text" maxlength="140" id="content" name="content">
+      <button type="button" class="send" onclick="submit();">发送</button>
+      <button type="button" class="send" onclick="offline();">下线</button>
+  </div>
+</body>
+</html>
