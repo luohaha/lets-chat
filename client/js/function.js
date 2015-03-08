@@ -6,5 +6,5 @@ function submit()
 }
 function offline()
 {
-	socket.emit('disconnection', {uname : name});
+	socket.emit('disconnect', {uname : name});
 }

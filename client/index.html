@@ -7,9 +7,11 @@
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
+		/*
+			bug : 聊天室人数不能做到同步更新
+		*/
 		var socket = io.connect('ws://localhost:3000');
-		//var userid = prompt("please input your id:");
-		var name = prompt("please input your name:");
+		var name = prompt("please input your name:"); //本客户段的名字
 		socket.emit('login', {userid : '1', username : name});
 		//接受新用户提醒消息
 		socket.on('welcome', function(data){
@@ -17,12 +19,22 @@
 			var tmp = "<p><font color=\"red\">";
 			var tmp2= "</font></p>";
 			$("div#ChatRoom").append(tmp+data.uname+"上线了!  "+"群内人数: "+data.unum+tmp2);
+			if(data.to == 'all')
+			{	
+				//$("div#people").empty();
+				var x;
+				//for (x in data.people)
+				//{
+					$("div#people").append("<p id="+data.uname+">"+data.uname+"</p>");
+				//}
+			}
 		});
 		//用户离线提醒
 		socket.on('leave', function(data){
 			var tmp = "<p><font color=\"red\">";
 			var tmp2= "</font></p>";
 			$("div#ChatRoom").append(tmp+data.uname+"下线了!  "+"群内人数: "+data.unum+tmp2);
+			$("p#"+data.uname).remove();
 		});
 		//接受新消息
 		socket.on('message', function(data){
@@ -33,10 +45,12 @@
 			$("div#ChatRoom").append(tmp+data.uname+"("+time+")"+" : "+data.say+tmp2);
 		});
 		//服务器断开
-		socket.on('disconnect', function(data){
+		socket.on('disconnect', function(){
 			$("div#ChatRoom").append("<p><font color=\"red\">与服务器断开连接!!!</font></p>");
 		});
+		//服务器重新启动
 		socket.on('reconnect', function(data){
+			socket.emit('login', {userid : '1', username : name});
 			$("div#ChatRoom").append("<p><font color=\"red\">与服务器重新连接!!!</font></p>");
 		});
 	</script>
@@ -46,10 +60,12 @@
 <body>
   <div id="ChatRoom">
   </div>
+  <div id="people">
+	<p>房间成员:</p>
+  </div>
   <div id="input">
       <input type="text" maxlength="140" id="content" name="content">
       <button type="button" class="send" onclick="submit();">发送</button>
-      <button type="button" class="send" onclick="offline();">下线</button>
   </div>
 </body>
 </html>

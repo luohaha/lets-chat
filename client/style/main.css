@@ -1,9 +1,20 @@
-#ChatRoom {
-	position: absolute;
+div#ChatRoom {
+	float: left;
 	margin-top: 10px;
-	width: 1000px;
+	width: 800px;
 	height: 400px;
 	background-color: #ff9900;
+	border: 2px solid;
+	border-radius: 25px;
+	-moz-border-radius: 25px;
+	box-shadow: 10px 10px 5px #888888;
+	overflow: scroll;
+}
+div#people {
+	float: left;
+	width: 300px;
+	height: 400px;
+	background-color: #009900;
 	border: 2px solid;
 	border-radius: 25px;
 	-moz-border-radius: 25px;
