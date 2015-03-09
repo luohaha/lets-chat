@@ -8,26 +8,24 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		/*
+			客户端
+			update : 2015-3-16
 			bug : 聊天室人数不能做到同步更新
 		*/
 		var socket = io.connect('ws://localhost:3000');
 		var name = prompt("please input your name:"); //本客户段的名字
-		socket.emit('login', {userid : '1', username : name});
+		var roomName = prompt("please input your room name:");//房间名字
+		socket.emit('login', {username : name, room : roomName});
+		//显示房间名称
+		$("div#people").append("<p>"+"房间名称 : "+roomName+"</p>");
 		//接受新用户提醒消息
 		socket.on('welcome', function(data){
 			//alert(data.msg);
 			var tmp = "<p><font color=\"red\">";
 			var tmp2= "</font></p>";
 			$("div#ChatRoom").append(tmp+data.uname+"上线了!  "+"群内人数: "+data.unum+tmp2);
-			if(data.to == 'all')
-			{	
-				//$("div#people").empty();
-				var x;
-				//for (x in data.people)
-				//{
-					$("div#people").append("<p id="+data.uname+">"+data.uname+"</p>");
-				//}
-			}
+			//更新房间人数
+			$("div#people").append("<p id="+data.uname+">"+data.uname+"</p>");
 		});
 		//用户离线提醒
 		socket.on('leave', function(data){
@@ -50,7 +48,7 @@
 		});
 		//服务器重新启动
 		socket.on('reconnect', function(data){
-			socket.emit('login', {userid : '1', username : name});
+			socket.emit('login', {username : name, room : roomName});
 			$("div#ChatRoom").append("<p><font color=\"red\">与服务器重新连接!!!</font></p>");
 		});
 	</script>
@@ -61,7 +59,6 @@
   <div id="ChatRoom">
   </div>
   <div id="people">
-	<p>房间成员:</p>
   </div>
   <div id="input">
       <input type="text" maxlength="140" id="content" name="content">
