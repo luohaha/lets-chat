@@ -3,13 +3,14 @@
 	<meta charset="utf-8">
 	<title>Chat Room v0.0.1</title>
 	<link rel="stylesheet" type="text/css" href="./style/main.css"/>
+	
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script src="http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		/*
-			客户端
-			update : 2015-3-16
 			bug : 聊天室人数不能做到同步更新
 		*/
 		var socket = io.connect('ws://localhost:3000');
@@ -17,52 +18,92 @@
 		var roomName = prompt("please input your room name:");//房间名字
 		socket.emit('login', {username : name, room : roomName});
 		//显示房间名称
-		$("div#people").append("<p>"+"房间名称 : "+roomName+"</p>");
+		//$("div#people").append("<p>"+"房间名称 : "+roomName+"</p>");
 		//接受新用户提醒消息
 		socket.on('welcome', function(data){
 			//alert(data.msg);
-			var tmp = "<p><font color=\"red\">";
-			var tmp2= "</font></p>";
-			$("div#ChatRoom").append(tmp+data.uname+"上线了!  "+"群内人数: "+data.unum+tmp2);
+			//var tmp = "<p><font color=\"red\">";
+			//var tmp2= "</font></p>";
+			//$("div#ChatRoom").append(tmp+data.uname+"上线了!  "+"群内人数: "+data.unum+tmp2);
+			var tmp = "<div class=\"panel panel-warning\"><div class=\"panel-heading\"><h3 class=\"panel-title\">";
+			var tmp2 = "</h3></div><div class=\"panel-body\">";
+			var tmp3 = "</div></div>";
+			$("div#ChatRoom").append(tmp+"系统消息"+tmp2+data.uname+"上线了 ！ "+"群内人数 ： "+data.unum+tmp3);
 			//更新房间人数
-			$("div#people").append("<p id="+data.uname+">"+data.uname+"</p>");
+			$("ul#people").append("<li id="+data.uname+"><a href=\"#\">"+data.uname+"</a></li>");
+			$("span#peopleNum").html(data.unum);
+			var scrollDiv = $('#ChatRoom');
+    			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
 		});
 		//用户离线提醒
 		socket.on('leave', function(data){
-			var tmp = "<p><font color=\"red\">";
-			var tmp2= "</font></p>";
-			$("div#ChatRoom").append(tmp+data.uname+"下线了!  "+"群内人数: "+data.unum+tmp2);
-			$("p#"+data.uname).remove();
+			var tmp = "<div class=\"panel panel-default\"><div class=\"panel-heading\"><h3 class=\"panel-title\">";
+			var tmp2 = "</h3></div><div class=\"panel-body\">";
+			var tmp3 = "</div></div>";
+			$("div#ChatRoom").append(tmp+"系统消息"+tmp2+data.uname+"下线了!  "+"群内人数: "+data.unum+tmp3);
+			$("li#"+data.uname).remove();
+			$("span#peopleNum").html(data.unum);
+			var scrollDiv = $('#ChatRoom');
+    			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
 		});
 		//接受新消息
 		socket.on('message', function(data){
 			//alert(data.msg);
-			var tmp = "<p>";
-			var tmp2= "</p>";
+			var tmp = "<div class=\"panel panel-success\"><div class=\"panel-heading\"><h3 class=\"panel-title\">";
+			var tmp2 = "</h3></div><div class=\"panel-body\">";
+			var tmp3 = "</div></div>";
 			var time = new Date().toLocaleString();
-			$("div#ChatRoom").append(tmp+data.uname+"("+time+")"+" : "+data.say+tmp2);
+			$("div#ChatRoom").append(tmp+data.uname+"("+time+")"+tmp2+data.say+tmp3);
+			var scrollDiv = $('#ChatRoom');
+    			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
 		});
 		//服务器断开
 		socket.on('disconnect', function(){
-			$("div#ChatRoom").append("<p><font color=\"red\">与服务器断开连接!!!</font></p>");
+			var tmp = "<div class=\"panel panel-danger\"><div class=\"panel-heading\"><h3 class=\"panel-title\">";
+			var tmp2 = "</h3></div><div class=\"panel-body\">";
+			var tmp3 = "</div></div>";
+			$("div#ChatRoom").append(tmp+"系统消息"+tmp2+"与服务器断开连接!!!"+tmp3);
+			var scrollDiv = $('#ChatRoom');
+    			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
 		});
 		//服务器重新启动
 		socket.on('reconnect', function(data){
 			socket.emit('login', {username : name, room : roomName});
-			$("div#ChatRoom").append("<p><font color=\"red\">与服务器重新连接!!!</font></p>");
+			var tmp = "<div class=\"panel panel-danger\"><div class=\"panel-heading\"><h3 class=\"panel-title\">";
+			var tmp2 = "</h3></div><div class=\"panel-body\">";
+			var tmp3 = "</div></div>";
+			$("div#ChatRoom").append(tmp+"系统消息"+tmp2+"与服务器重新连接!!!"+tmp3);
+			var scrollDiv = $('#ChatRoom');
+    			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
 		});
 	</script>
 	<script type="text/javascript" src="js/function.js"></script>
 </head>
 
 <body>
-  <div id="ChatRoom">
-  </div>
-  <div id="people">
-  </div>
-  <div id="input">
-      <input type="text" maxlength="140" id="content" name="content">
-      <button type="button" class="send" onclick="submit();">发送</button>
-  </div>
+
+<div class="row">
+<div class="col-md-9" id="ChatRoom">
+   
+</div>
+
+<div class="col-md-3" id="Room">
+   
+<ul class="nav nav-pills nav-stacked" style="max-width: 260px;" id="people">
+   <li class="active">
+      <a href="#">
+         <span class="badge pull-right" id="peopleNum">0</span>
+         房间成员
+      </a>
+   </li>
+</ul>
+</div>
+</div>
+<div id="input" class="container">
+      <input type="text"  id="content" name="content" class="form-control">
+      <button type="button" class="btn btn-info btn-lg" onclick="submit();">发送</button>
+ </div>
+<!--影藏-->
+
 </body>
 </html>

@@ -76,7 +76,7 @@ io.on('connection', function(socket){
 		//离开对应的房间
 		socket.leave(socket.room);
 		console.log("离线测试 ： "+socket.name);
-		io.emit('leave', {uname : socket.name, unum : userNum, to : 'all'});
+		io.in(socket.room).emit('leave', {uname : socket.name, unum : userNum[socket.room], to : 'all'});
 	});
 });
 
