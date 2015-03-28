@@ -30,7 +30,16 @@
 			var tmp3 = "</div></div>";
 			$("div#ChatRoom").append(tmp+"系统消息"+tmp2+data.uname+"上线了 ！ "+"群内人数 ： "+data.unum+tmp3);
 			//更新房间人数
-			$("ul#people").append("<li id="+data.uname+"><a href=\"#\">"+data.uname+"</a></li>");
+			$("ul#people").empty();
+			var head ="<li class=\"active\"><a href=\"#\"><span class=\"badge pull-right\" id=\"peopleNum\">0</span>房间成员</a></li>";
+			$("ul#people").append(head);
+			var ttp = data.result;
+			for (var i=0; i < ttp.length; i++)
+			{
+				//$("ul#people").append("<li id="+data.uname+"><a href=\"#\">"+data.uname+"</a></li>");
+		//		alert(data.result[i]);
+				$("ul#people").append("<li id="+ttp[i].person+"><a href=\"#\">"+ttp[i].person+"</a></li>");
+			};
 			$("span#peopleNum").html(data.unum);
 			var scrollDiv = $('#ChatRoom');
     			scrollDiv.scrollTop(scrollDiv[0].scrollHeight-100);
